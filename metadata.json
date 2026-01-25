@@ -1,0 +1,5 @@
+{
+  "name": "SkillGap Radar",
+  "description": "Enterprise-grade AI Talent Intelligence system using Gemini 3 Pro to perform semantic gap analysis between Job Descriptions and Candidate Profiles.",
+  "requestFramePermissions": []
+}
