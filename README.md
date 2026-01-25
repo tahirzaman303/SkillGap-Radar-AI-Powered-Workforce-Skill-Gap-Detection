@@ -1,20 +1,28 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# SkillGap Radar
 
-# Run and deploy your AI Studio app
+SkillGap Radar is an enterprise-grade AI decision-support system that performs semantic skill gap analysis between job descriptions and candidate profiles using Google Gemini 3 Pro.
 
-This contains everything you need to run your app locally.
+## Problem
+Traditional ATS systems rely on keyword matching, failing to understand implicit skill requirements, competency depth, and business risk.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1iZEvzaJqlRSvrTF-ku06o_AIe86JgJpC
+## Solution
+SkillGap Radar uses Gemini 3 Pro’s long-context reasoning to infer hidden skill requirements, compare them against observed competencies, identify critical gaps, and generate targeted learning pathways.
 
-## Run Locally
+## Key Features
+- Implicit skill inference
+- Competency level comparison
+- Business risk analysis
+- Executive-ready dashboard
+- Exportable reports
 
-**Prerequisites:**  Node.js
+## Gemini 3 Usage
+- Model: gemini-3-pro-preview
+- Long-context document reasoning
+- Structured JSON decision outputs
+- Risk-aware semantic analysis
 
+## Architecture
+User Input → Gemini 3 Pro → Reasoning Engine → Structured Skill Analysis → Executive Dashboard
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Team
+Tahir Zaman
