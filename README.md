@@ -1,49 +1,43 @@
-# SkillGap Radar — AI-Powered Talent Intelligence
+# SkillGap Radar 🎯
 
-## Application Overview & Working Concept
+**Enterprise-Grade AI Talent Intelligence System**
 
-**SkillGap Radar** is an enterprise-grade AI Talent Intelligence system designed to perform deep semantic gap analysis between Job Descriptions (JDs) and Candidate Profiles. Unlike keyword-matching ATS systems, SkillGap Radar utilizes the advanced reasoning capabilities of the **Gemini 3 Pro** model to understand context, infer implicit skills, and generate actionable upskilling pathways.
+SkillGap Radar is a sophisticated web application designed to perform semantic gap analysis between Job Descriptions (JDs) and Candidate Profiles (Resumes). Unlike traditional keyword-matching ATS systems, SkillGap Radar utilizes the reasoning capabilities of **Google's Gemini 3 Pro** model to understand context, infer implicit skills, and generate personalized upskilling pathways.
 
-### Key Features
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![React](https://img.shields.io/badge/React-18-blue)
+![Vite](https://img.shields.io/badge/Vite-5-purple)
+![Gemini](https://img.shields.io/badge/AI-Gemini%203%20Pro-orange)
 
-1.  **Semantic Gap Analysis**: Compares required skills in a JD against observed skills in a resume, calculating specific gap levels (1-5 scale).
-2.  **Implicit Skill Inference**: Detects skills that are implied but not explicitly stated (e.g., "Microservices architecture" implies "Distributed Systems").
-3.  **Multi-Format Parsing**: Supports PDF (via Vision/Multimodal), DOCX (via raw text extraction), and TXT files.
-4.  **Visual Analytics**: Presents data in an interactive Radar Chart and Skill Matrix for instant visual assessment.
-5.  **Automated Learning Pathways**: Generates personalized, prioritized learning actions with resource links to bridge identified gaps.
-6.  **PDF Reporting**: One-click export of a professional analysis report for HR or Candidate feedback.
+## 🚀 Key Features
 
-### How It Works
+*   **Semantic Analysis:** Goes beyond keywords to understand the depth of experience and implicit requirements (e.g., inferring "Distributed Systems" knowledge from "Microservices" experience).
+*   **AI-Powered Reasoning:** Uses the `gemini-3-pro-preview` model with **Thinking Config** to perform deep logical deduction before scoring.
+*   **Multi-Format Resume Support:** Accepts PDF, DOCX, and TXT files.
+*   **Visual Gap Analysis:** Interactive Radar Charts and Skill Matrices to visualize strengths and weaknesses.
+*   **Personalized Learning Pathways:** Generates actionable, prioritized learning steps with estimated timelines and resources to bridge identified gaps.
+*   **PDF Export:** Download professional analysis reports for HR or candidate review.
 
-1.  **Input**: The user pastes a Job Description and uploads a Candidate Resume.
-2.  **Processing**: The system parses the documents and constructs a structured prompt for the Gemini 3 Pro model.
-3.  **AI Reasoning**:
-    *   The model analyzes the text to extract skills, categories, and importance levels.
-    *   It rates the *Required Level* (from JD) and *Observed Level* (from Resume).
-    *   It calculates the *Gap* and provides specific reasoning and evidence from the text.
-4.  **Visualization**: The React frontend renders the structured JSON response into a Dashboard with Radar charts and detailed lists.
-5.  **Action**: The user can review the "Learning Pathway" to see specific recommendations for closing skill gaps.
+## 🛠️ Tech Stack
 
-### Tech Stack
+*   **Frontend Framework:** React 18 (TypeScript)
+*   **Build Tool:** Vite
+*   **Styling:** Tailwind CSS (via CDN/Utility classes)
+*   **AI Integration:** Google GenAI SDK (`@google/genai`)
+*   **Visualization:** Recharts
+*   **File Processing:** `mammoth` (DOCX), `jspdf` (PDF Generation)
+*   **Icons:** Lucide React
 
-*   **Frontend**: React 18, TypeScript, Tailwind CSS
-*   **AI Model**: Google Gemini 3 Pro (via `@google/genai`)
-*   **Visualization**: Recharts
-*   **Document Handling**: Mammoth (DOCX), Native File API
-*   **Build Tool**: Vite
+## 📦 Prerequisites
 
-### Setup & Installation
+*   Node.js (v18 or higher)
+*   npm or yarn
+*   A valid **Google Gemini API Key** (Paid tier recommended for Veo/Thinking models, though free tier works for basic testing if available).
 
-1.  Clone the repository.
-2.  Create a `.env` file in the root directory and add your API key:
-    ```
-    VITE_API_KEY=your_google_genai_api_key
-    ```
-3.  Install dependencies:
-    ```bash
-    npm install
-    ```
-4.  Run the development server:
-    ```bash
-    npm run dev
-    ```
+## ⚡ Getting Started
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/your-username/skillgap-radar.git
+cd skillgap-radar
+```
