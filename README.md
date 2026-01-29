@@ -1,42 +1,20 @@
-# SkillGap Radar 🎯
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-**Enterprise-Grade AI Talent Intelligence System**
+# Run and deploy your AI Studio app
 
-SkillGap Radar is a sophisticated web application designed to perform semantic gap analysis between Job Descriptions (JDs) and Candidate Profiles (Resumes). Unlike traditional keyword-matching ATS systems, SkillGap Radar utilizes the reasoning capabilities of **Google's Gemini 3 Pro** model to understand context, infer implicit skills, and generate personalized upskilling pathways.
+This contains everything you need to run your app locally.
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![React](https://img.shields.io/badge/React-18-blue)
-![Vite](https://img.shields.io/badge/Vite-5-purple)
-![Gemini](https://img.shields.io/badge/AI-Gemini%203%20Pro-orange)
+View your app in AI Studio: https://ai.studio/apps/drive/1iZEvzaJqlRSvrTF-ku06o_AIe86JgJpC
 
-## 🚀 Key Features
+## Run Locally
 
-*   **Semantic Analysis:** Goes beyond keywords to understand the depth of experience and implicit requirements (e.g., inferring "Distributed Systems" knowledge from "Microservices" experience).
-*   **AI-Powered Reasoning:** Uses the `gemini-3-pro-preview` model with **Thinking Config** to perform deep logical deduction before scoring.
-*   **Multi-Format Resume Support:** Accepts PDF, DOCX, and TXT files.
-*   **Visual Gap Analysis:** Interactive Radar Charts and Skill Matrices to visualize strengths and weaknesses.
-*   **Personalized Learning Pathways:** Generates actionable, prioritized learning steps with estimated timelines and resources to bridge identified gaps.
-*   **PDF Export:** Download professional analysis reports for HR or candidate review.
+**Prerequisites:**  Node.js
 
-## 🛠️ Tech Stack
 
-*   **Frontend Framework:** React 18 (TypeScript)
-*   **Build Tool:** Vite
-*   **Styling:** Tailwind CSS (via CDN/Utility classes)
-*   **AI Integration:** Google GenAI SDK (`@google/genai`)
-*   **Visualization:** Recharts
-*   **File Processing:** `mammoth` (DOCX), `jspdf` (PDF Generation)
-*   **Icons:** Lucide React
-
-## 📦 Prerequisites
-
-*   Node.js (v18 or higher)
-*   npm or yarn
-*   A valid **Google Gemini API Key** (Paid tier recommended for Veo/Thinking models, though free tier works for basic testing if available).
-
-## ⚡ Getting Started
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/your-username/skillgap-radar.git
-cd skillgap-radar
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
