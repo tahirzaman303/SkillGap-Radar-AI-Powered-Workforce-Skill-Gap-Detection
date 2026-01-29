@@ -43,15 +43,8 @@ export const analyzeGap = async (
   jdText: string,
   resumeData: { content: string; mimeType: string; isBase64: boolean }
 ): Promise<AnalysisResult> => {
-  // Support Vite environment variables (VITE_API_KEY) and standard process.env
-  // @ts-ignore - import.meta is available in Vite environment
-  const apiKey = import.meta.env.VITE_API_KEY || process.env.API_KEY;
-  
-  if (!apiKey) {
-    throw new Error("API Key not found. Please set VITE_API_KEY in your environment variables.");
-  }
-
-  const ai = new GoogleGenAI({ apiKey });
+  // Use process.env.API_KEY as per guidelines.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
   const systemInstruction = `
     You are an expert Talent Intelligence System performing a Semantic Gap Analysis.
