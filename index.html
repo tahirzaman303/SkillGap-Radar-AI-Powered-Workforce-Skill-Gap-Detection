@@ -6,10 +6,11 @@
     <title>SkillGap Radar | AI Talent Intelligence</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
       
       body {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        overflow-x: hidden;
       }
 
       /* Custom Scrollbar */
@@ -17,36 +18,50 @@
         width: 6px;
       }
       .custom-scrollbar::-webkit-scrollbar-track {
-        background: rgba(30, 41, 59, 0.5); 
-        border-radius: 4px;
+        background: transparent; 
       }
       .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: rgba(71, 85, 105, 0.8); 
-        border-radius: 4px;
+        background: rgba(99, 102, 241, 0.3); 
+        border-radius: 10px;
       }
       .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: rgba(99, 102, 241, 0.5); 
+        background: rgba(99, 102, 241, 0.6); 
       }
 
       /* Animations */
+      @keyframes blob {
+        0% { transform: translate(0px, 0px) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+        100% { transform: translate(0px, 0px) scale(1); }
+      }
+      .animate-blob {
+        animation: blob 10s infinite;
+      }
+
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
+        from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
       }
       .animate-fade-in {
-        animation: fadeIn 0.6s ease-out forwards;
-      }
-      .animate-fade-in-up {
-        animation: fadeIn 0.4s ease-out forwards;
+        animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
       
-      @keyframes pulseSlow {
-        0%, 100% { opacity: 0.3; transform: scale(1); }
-        50% { opacity: 0.5; transform: scale(1.1); }
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
       }
-      .animate-pulse-slow {
-        animation: pulseSlow 8s infinite ease-in-out;
+      .animate-float {
+        animation: float 6s ease-in-out infinite;
       }
+
+      .glass-panel {
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+      
+      .animation-delay-2000 { animation-delay: 2s; }
+      .animation-delay-4000 { animation-delay: 4s; }
     </style>
   <script type="importmap">
 {
