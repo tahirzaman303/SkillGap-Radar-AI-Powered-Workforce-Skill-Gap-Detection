@@ -41,7 +41,8 @@ const analysisSchema: Schema = {
 
 export const analyzeGap = async (
   jdText: string,
-  resumeData: { content: string; mimeType: string; isBase64: boolean }
+  resumeData: { content: string; mimeType: string; isBase64: boolean },
+  modelType: 'fast' | 'deep' = 'fast'
 ): Promise<AnalysisResult> => {
   const apiKey = process.env.API_KEY;
   
@@ -51,6 +52,11 @@ export const analyzeGap = async (
   }
 
   const ai = new GoogleGenAI({ apiKey });
+
+  // Select model based on user preference
+  // 'fast' uses gemini-2.5-flash-lite for low latency responses
+  // 'deep' uses gemini-3-pro-preview for complex reasoning tasks
+  const modelName = modelType === 'deep' ? 'gemini-3-pro-preview' : 'gemini-2.5-flash-lite';
 
   const systemInstruction = `
     You are an expert Talent Intelligence System performing a Semantic Gap Analysis.
@@ -80,16 +86,14 @@ export const analyzeGap = async (
   }
 
   try {
-    // Switch to Flash model which has a generous free tier (15 RPM)
-    // compared to Pro/Preview models which often require billing or have low quotas.
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash", 
+      model: modelName,
       contents: { parts },
       config: {
         systemInstruction,
         responseMimeType: "application/json",
         responseSchema: analysisSchema,
-        // Removed thinkingConfig as it burns tokens rapidly and is less available on free tiers
+        // Optional: thinkingConfig could be added here for 'gemini-3-pro-preview' if even deeper reasoning is needed
       },
     });
 
@@ -98,6 +102,10 @@ export const analyzeGap = async (
     }
 
     const result = JSON.parse(response.text) as AnalysisResult;
+    
+    // Attach model metadata
+    result.modelUsed = modelType === 'deep' ? 'Gemini 3.0 Pro' : 'Gemini 2.5 Flash Lite';
+    
     return result;
   } catch (error) {
     console.error("AI Analysis Failed:", error);

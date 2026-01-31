@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import mammoth from 'mammoth';
-import { Upload, FileText, Loader2, Moon, Sun, Wand2 } from 'lucide-react';
+import { Upload, FileText, Loader2, Moon, Sun, Wand2, Zap, Brain } from 'lucide-react';
 import { Theme } from '../types';
 
 interface InputSectionProps {
-  onAnalyze: (jd: string, resumeData: { content: string; mimeType: string; isBase64: boolean }) => void;
+  onAnalyze: (jd: string, resumeData: { content: string; mimeType: string; isBase64: boolean }, modelType: 'fast' | 'deep') => void;
   isLoading: boolean;
   theme: Theme;
   toggleTheme: () => void;
@@ -15,6 +15,7 @@ export const InputSection: React.FC<InputSectionProps> = ({ onAnalyze, isLoading
   const [resumeData, setResumeData] = useState<{ content: string; mimeType: string; isBase64: boolean } | null>(null);
   const [resumeFileName, setResumeFileName] = useState<string>('');
   const [isDragging, setIsDragging] = useState(false);
+  const [modelType, setModelType] = useState<'fast' | 'deep'>('fast');
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement> | File) => {
     let file: File | undefined;
@@ -126,7 +127,7 @@ Requirements:
                 </h1>
             </div>
           <p className={labelClass}>
-            Enterprise-grade Semantic Gap Analysis powered by Gemini 2.5 Flash
+            Enterprise-grade Semantic Gap Analysis powered by Gemini
           </p>
         </div>
         
@@ -202,12 +203,29 @@ Requirements:
         </div>
       </div>
 
-      <div className="flex justify-center pt-8">
+      <div className="flex flex-col items-center justify-center pt-8 gap-6">
+        
+        {/* Model Selector */}
+        <div className={`flex p-1 rounded-xl border ${theme === 'dark' ? 'bg-slate-900/50 border-slate-700' : 'bg-white/50 border-slate-200'}`}>
+            <button
+                onClick={() => setModelType('fast')}
+                className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${modelType === 'fast' ? (theme === 'dark' ? 'bg-slate-800 text-indigo-400 shadow-sm' : 'bg-white text-indigo-600 shadow-sm') : (theme === 'dark' ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700')}`}
+            >
+                <Zap className={`w-4 h-4 ${modelType === 'fast' ? 'fill-current' : ''}`} /> Lightning Fast
+            </button>
+            <button
+                onClick={() => setModelType('deep')}
+                className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${modelType === 'deep' ? (theme === 'dark' ? 'bg-slate-800 text-purple-400 shadow-sm' : 'bg-white text-purple-600 shadow-sm') : (theme === 'dark' ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700')}`}
+            >
+                <Brain className="w-4 h-4" /> Deep Reasoning
+            </button>
+        </div>
+
         <button
-          onClick={() => jdText && resumeData && onAnalyze(jdText, resumeData)}
+          onClick={() => jdText && resumeData && onAnalyze(jdText, resumeData, modelType)}
           disabled={isLoading || !jdText || !resumeData}
           className={`
-            relative px-10 py-4 rounded-2xl font-bold text-lg shadow-xl transition-all duration-300 transform
+            relative px-10 py-4 rounded-2xl font-bold text-lg shadow-xl transition-all duration-300 transform w-full md:w-auto min-w-[300px]
             ${isLoading || !jdText || !resumeData
               ? 'bg-slate-500/20 text-slate-400 cursor-not-allowed border border-slate-500/20'
               : 'bg-gradient-to-r from-indigo-600 to-emerald-600 text-white hover:shadow-indigo-500/40 hover:-translate-y-1 active:scale-95 border border-white/10'}
@@ -215,9 +233,9 @@ Requirements:
         >
             <div className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 hover:opacity-100 transition-opacity duration-300" />
           {isLoading ? (
-            <span className="flex items-center gap-3">
+            <span className="flex items-center justify-center gap-3">
               <Loader2 className="w-5 h-5 animate-spin" />
-              Analyzing with Gemini...
+              Running {modelType === 'fast' ? 'Fast Analysis' : 'Deep Analysis'}...
             </span>
           ) : (
             'Generate Gap Analysis'

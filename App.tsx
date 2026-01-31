@@ -32,10 +32,10 @@ const App: React.FC = () => {
     localStorage.setItem('skillGap_theme', newTheme);
   };
 
-  const handleAnalyze = async (jd: string, resumeData: { content: string; mimeType: string; isBase64: boolean }) => {
+  const handleAnalyze = async (jd: string, resumeData: { content: string; mimeType: string; isBase64: boolean }, modelType: 'fast' | 'deep') => {
     setIsLoading(true);
     try {
-      const result = await analyzeGap(jd, resumeData);
+      const result = await analyzeGap(jd, resumeData, modelType);
       setAnalysisResult(result);
       localStorage.setItem('skillGap_result', JSON.stringify(result));
     } catch (error: any) {

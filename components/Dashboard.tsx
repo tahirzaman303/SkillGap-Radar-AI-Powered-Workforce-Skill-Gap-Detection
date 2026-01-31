@@ -63,12 +63,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, togg
     
     doc.setFontSize(12);
     doc.text(`Match Score: ${data.matchScore}%`, 14, 32);
+    doc.text(`Analyzed with: ${data.modelUsed || 'Gemini AI'}`, 14, 38);
     
     doc.setFontSize(14);
-    doc.text("Executive Summary", 14, 45);
+    doc.text("Executive Summary", 14, 48);
     doc.setFontSize(10);
     const splitSummary = doc.splitTextToSize(data.executiveSummary, 180);
-    doc.text(splitSummary, 14, 52);
+    doc.text(splitSummary, 14, 55);
 
     const tableData = data.skills.map(s => [
       s.name,
@@ -79,7 +80,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, togg
     ]);
 
     autoTable(doc, {
-      startY: 70,
+      startY: 75,
       head: [['Skill', 'Required', 'Observed', 'Gap', 'Importance']],
       body: tableData,
       theme: 'grid',
@@ -163,7 +164,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, togg
           </div>
           <div>
             <h2 className={`text-2xl font-bold ${headingColor}`}>Analysis Complete</h2>
-            <p className={textMuted}>Powered by Gemini 2.5 Flash</p>
+            <p className={textMuted}>Powered by <span className="text-indigo-500 font-semibold">{data.modelUsed || 'Gemini AI'}</span></p>
           </div>
         </div>
         

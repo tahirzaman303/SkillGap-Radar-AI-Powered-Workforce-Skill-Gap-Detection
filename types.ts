@@ -21,6 +21,7 @@ export interface AnalysisResult {
   executiveSummary: string;
   skills: Skill[];
   learningPathway: LearningAction[];
+  modelUsed?: string;
 }
 
 export type Theme = 'dark' | 'light';
