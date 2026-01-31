@@ -2,17 +2,17 @@
 
 **Enterprise-Grade AI Talent Intelligence System**
 
-SkillGap Radar is a sophisticated web application designed to perform semantic gap analysis between Job Descriptions (JDs) and Candidate Profiles (Resumes). Unlike traditional keyword-matching ATS systems, SkillGap Radar utilizes the reasoning capabilities of **Google's Gemini 3 Pro** model to understand context, infer implicit skills, and generate personalized upskilling pathways.
+SkillGap Radar is a sophisticated web application designed to perform semantic gap analysis between Job Descriptions (JDs) and Candidate Profiles (Resumes). Unlike traditional keyword-matching ATS systems, SkillGap Radar utilizes the capabilities of **Google's Gemini 2.5 Flash** model to understand context, infer implicit skills, and generate personalized upskilling pathways.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![React](https://img.shields.io/badge/React-18-blue)
 ![Vite](https://img.shields.io/badge/Vite-5-purple)
-![Gemini](https://img.shields.io/badge/AI-Gemini%203%20Pro-orange)
+![Gemini](https://img.shields.io/badge/AI-Gemini%202.5%20Flash-orange)
 
 ## 🚀 Key Features
 
 *   **Semantic Analysis:** Goes beyond keywords to understand the depth of experience and implicit requirements (e.g., inferring "Distributed Systems" knowledge from "Microservices" experience).
-*   **AI-Powered Reasoning:** Uses the `gemini-3-pro-preview` model with **Thinking Config** to perform deep logical deduction before scoring.
+*   **AI-Powered Reasoning:** Uses the fast and efficient `gemini-2.5-flash` model to analyze profiles.
 *   **Multi-Format Resume Support:** Accepts PDF, DOCX, and TXT files.
 *   **Visual Gap Analysis:** Interactive Radar Charts and Skill Matrices to visualize strengths and weaknesses.
 *   **Personalized Learning Pathways:** Generates actionable, prioritized learning steps with estimated timelines and resources to bridge identified gaps.
@@ -32,7 +32,7 @@ SkillGap Radar is a sophisticated web application designed to perform semantic g
 
 *   Node.js (v18 or higher)
 *   npm or yarn
-*   A valid **Google Gemini API Key** (Paid tier recommended for Veo/Thinking models, though free tier works for basic testing if available).
+*   A valid **Google Gemini API Key** (Free tier supported via Gemini 2.5 Flash).
 
 ## ⚡ Getting Started
 

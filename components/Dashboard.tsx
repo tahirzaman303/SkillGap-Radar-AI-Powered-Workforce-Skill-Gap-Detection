@@ -163,7 +163,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, togg
           </div>
           <div>
             <h2 className={`text-2xl font-bold ${headingColor}`}>Analysis Complete</h2>
-            <p className={textMuted}>Powered by Gemini 3 Pro Reasoning</p>
+            <p className={textMuted}>Powered by Gemini 2.5 Flash</p>
           </div>
         </div>
         

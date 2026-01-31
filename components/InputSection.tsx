@@ -126,7 +126,7 @@ Requirements:
                 </h1>
             </div>
           <p className={labelClass}>
-            Enterprise-grade Semantic Gap Analysis powered by Gemini 3 Pro
+            Enterprise-grade Semantic Gap Analysis powered by Gemini 2.5 Flash
           </p>
         </div>
         
@@ -217,7 +217,7 @@ Requirements:
           {isLoading ? (
             <span className="flex items-center gap-3">
               <Loader2 className="w-5 h-5 animate-spin" />
-              Reasoning with Gemini...
+              Analyzing with Gemini...
             </span>
           ) : (
             'Generate Gap Analysis'
