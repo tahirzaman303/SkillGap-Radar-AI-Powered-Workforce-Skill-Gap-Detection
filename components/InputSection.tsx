@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import mammoth from 'mammoth';
 import { Upload, FileText, Loader2 } from 'lucide-react';
 

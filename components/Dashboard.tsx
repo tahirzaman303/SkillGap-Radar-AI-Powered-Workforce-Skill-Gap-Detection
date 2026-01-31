@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AnalysisResult, Skill } from '../types';
 import { SkillRadar } from './SkillRadar';
-import { Download, ChevronRight, AlertTriangle, CheckCircle, BrainCircuit, RotateCcw } from 'lucide-react';
+import { Download, ChevronRight, CheckCircle, BrainCircuit, RotateCcw } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
