@@ -80,14 +80,16 @@ export const analyzeGap = async (
   }
 
   try {
+    // Switch to Flash model which has a generous free tier (15 RPM)
+    // compared to Pro/Preview models which often require billing or have low quotas.
     const response = await ai.models.generateContent({
-      model: "gemini-3-pro-preview", 
+      model: "gemini-2.5-flash", 
       contents: { parts },
       config: {
         systemInstruction,
         responseMimeType: "application/json",
         responseSchema: analysisSchema,
-        thinkingConfig: { thinkingBudget: 2048 }, // Enable thinking for deeper reasoning
+        // Removed thinkingConfig as it burns tokens rapidly and is less available on free tiers
       },
     });
 
