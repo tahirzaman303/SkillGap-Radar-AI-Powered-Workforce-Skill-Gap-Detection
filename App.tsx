@@ -26,9 +26,10 @@ const App: React.FC = () => {
       const result = await analyzeGap(jd, resumeData);
       setAnalysisResult(result);
       localStorage.setItem('skillGap_result', JSON.stringify(result));
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert("Analysis failed. Please try again or check your API key.");
+      // Show the specific error message (e.g., "VITE_API_KEY is missing" or "400 Bad Request")
+      alert(`Analysis failed: ${error.message || "Unknown error"}`);
     } finally {
       setIsLoading(false);
     }

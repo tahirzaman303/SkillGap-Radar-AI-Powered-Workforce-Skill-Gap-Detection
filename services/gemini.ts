@@ -43,8 +43,14 @@ export const analyzeGap = async (
   jdText: string,
   resumeData: { content: string; mimeType: string; isBase64: boolean }
 ): Promise<AnalysisResult> => {
-  // Use process.env.API_KEY as per guidelines.
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = process.env.API_KEY;
+  
+  // Explicit check for missing key to help debugging
+  if (!apiKey || apiKey.trim() === '') {
+    throw new Error("VITE_API_KEY is missing. Check Vercel Environment Variables.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
 
   const systemInstruction = `
     You are an expert Talent Intelligence System performing a Semantic Gap Analysis.
