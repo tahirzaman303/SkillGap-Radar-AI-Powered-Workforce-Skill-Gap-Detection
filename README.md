@@ -57,38 +57,6 @@ Unlike traditional ATS systems that rely on keyword matching, SkillGap Radar uti
 3.  **Token Budget:** In "Thinking Mode," a budget of ~8k tokens is reserved for internal reasoning, improving the accuracy of complex skill evaluations.
 4.  **Output:** Returns a structured JSON object containing an Executive Summary, Skill Array, and Learning Pathway.
 
----
-
-## 📦 Installation & Setup
-
-### 1. Prerequisites
-*   Node.js (v18+)
-*   A Google Cloud Project with the Gemini API enabled.
-
-### 2. Clone and Install
-```bash
-git clone https://github.com/your-username/skillgap-radar.git
-cd skillgap-radar
-npm install
-```
-
-### 3. Environment Configuration
-Create a `.env` file in the root directory and add your API Key:
-
-```env
-VITE_API_KEY=your_gemini_api_key_here
-```
-
-> **Note:** The app uses `VITE_API_KEY` which is mapped to `process.env.API_KEY` in `vite.config.ts`.
-
-### 4. Run Locally
-```bash
-npm run dev
-```
-Open `http://localhost:5173` in your browser.
-
----
-
 ## 📖 Usage Guide
 
 1.  **Input Phase:**
