@@ -11,8 +11,8 @@ const skillSchema: Schema = {
     requiredLevel: { type: Type.NUMBER, description: "1-5 scale required by JD" },
     observedLevel: { type: Type.NUMBER, description: "1-5 scale observed in candidate" },
     gap: { type: Type.NUMBER, description: "Calculated gap (required - observed)" },
-    reasoning: { type: Type.STRING, description: "Why this score was given" },
-    evidence: { type: Type.STRING, description: "Quote from resume or 'Not found'" },
+    reasoning: { type: Type.STRING, description: "Detailed justification of the score, referencing specific evidence or lack thereof." },
+    evidence: { type: Type.STRING, description: "Direct quote from resume or 'Not explicitly found' or 'Implied by [Skill X]'" },
   },
   required: ["name", "category", "importance", "requiredLevel", "observedLevel", "gap", "reasoning", "evidence"],
 };
@@ -32,7 +32,7 @@ const analysisSchema: Schema = {
   type: Type.OBJECT,
   properties: {
     matchScore: { type: Type.NUMBER, description: "Overall match percentage (0-100)" },
-    executiveSummary: { type: Type.STRING, description: "High-level summary of the fit" },
+    executiveSummary: { type: Type.STRING, description: "High-level summary of the fit, identifying key strengths and critical missing pieces." },
     skills: { type: Type.ARRAY, items: skillSchema },
     learningPathway: { type: Type.ARRAY, items: learningActionSchema },
   },
@@ -48,26 +48,43 @@ export const analyzeGap = async (
   
   // Explicit check for missing key to help debugging
   if (!apiKey || apiKey.trim() === '') {
-    throw new Error("VITE_API_KEY is missing. Check Vercel Environment Variables.");
+    throw new Error("API_KEY is missing. Check Vercel Environment Variables or your .env file.");
   }
 
   const ai = new GoogleGenAI({ apiKey });
 
-  // Select model based on user preference
-  // 'fast' uses gemini-2.5-flash-lite for low latency responses
-  // 'deep' uses gemini-3-pro-preview for complex reasoning tasks
-  const modelName = modelType === 'deep' ? 'gemini-3-pro-preview' : 'gemini-2.5-flash-lite';
+  // Use gemini-3-flash-preview as it supports Thinking Config and is valid.
+  // gemini-2.5-flash-latest was incorrect.
+  const modelName = 'gemini-3-flash-preview';
+  
+  // Configuration for "Thinking"
+  // For 'deep' mode, we allocate a budget for reasoning.
+  const thinkingBudget = modelType === 'deep' ? 8192 : 0;
+  
+  // Ensure we have enough tokens for both thinking and the final JSON response
+  // If thinking is enabled, we need a higher total limit.
+  const maxOutputTokens = modelType === 'deep' ? 16384 : 8192;
 
   const systemInstruction = `
-    You are an expert Talent Intelligence System performing a Semantic Gap Analysis.
-    Your goal is to compare a Job Description (JD) against a Candidate Profile to identify skill gaps, implicit requirements, and upskilling needs.
-    
-    Rules:
-    1. Infer implicit skills (e.g., "Microservices" implies "Distributed Systems").
-    2. Rate competencies on a strict 1-5 scale (1=Novice, 5=Expert).
-    3. Be critical. Do not hallucinate skills not present or implied in the resume.
-    4. Provide specific, actionable learning pathways.
-    5. Calculate the Gap as (Required Level - Observed Level). If Observed > Required, Gap is 0.
+    You are an expert Talent Intelligence System acting as a Senior Technical Recruiter and Engineering Manager.
+    Your goal is to perform a deep Semantic Gap Analysis between a Job Description (JD) and a Candidate Profile.
+
+    CRITICAL REASONING INSTRUCTIONS:
+    1.  **Analyze Context, Not Just Keywords:** Do not just look for string matches. If a candidate lists "Kubernetes" and "Docker", infer that they have "Containerization" skills even if the word "Containerization" is missing.
+    2.  **Evaluate Depth:** Differentiate between "familiarity" (mentioned once) and "proficiency" (used in multiple projects/years).
+    3.  **Detect Negative Evidence:** If a skill is "Critical" in the JD but completely absent in the resume, explicitly mark it as a gap and explain why it matters.
+    4.  **Scoring Standard (1-5):**
+        - 1: Novice/Theory only.
+        - 2: Basic exposure/Junior level.
+        - 3: Competent/Mid-level (Can work independently).
+        - 4: Advanced/Senior (Can lead/architect).
+        - 5: Expert/Principal (Industry leader/Deep specialization).
+    5.  **Gap Calculation:** Gap = Required - Observed. (If Observed >= Required, Gap is 0).
+
+    OUTPUT INSTRUCTIONS:
+    - Provide a specific, actionable learning pathway for gaps.
+    - Be strict but fair.
+    - Return ONLY JSON matching the schema.
   `;
 
   // Prepare contents
@@ -93,22 +110,27 @@ export const analyzeGap = async (
         systemInstruction,
         responseMimeType: "application/json",
         responseSchema: analysisSchema,
-        // Optional: thinkingConfig could be added here for 'gemini-3-pro-preview' if even deeper reasoning is needed
+        maxOutputTokens: maxOutputTokens,
+        thinkingConfig: { thinkingBudget: thinkingBudget },
       },
     });
 
     if (!response.text) {
-      throw new Error("No response from AI");
+      throw new Error("Empty response from AI model");
     }
 
     const result = JSON.parse(response.text) as AnalysisResult;
     
     // Attach model metadata
-    result.modelUsed = modelType === 'deep' ? 'Gemini 3.0 Pro' : 'Gemini 2.5 Flash Lite';
+    result.modelUsed = modelType === 'deep' ? 'Gemini 3 Flash (Thinking Mode)' : 'Gemini 3 Flash (Standard)';
     
     return result;
-  } catch (error) {
+  } catch (error: any) {
     console.error("AI Analysis Failed:", error);
-    throw error;
+    // Provide a more helpful error message to the UI
+    if (error.message?.includes('404') || error.message?.includes('not found')) {
+      throw new Error(`Model ${modelName} not found. Please check API availability.`);
+    }
+    throw new Error(`AI Request Failed: ${error.message}`);
   }
 };

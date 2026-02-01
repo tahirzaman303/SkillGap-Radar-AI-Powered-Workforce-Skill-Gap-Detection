@@ -15,7 +15,7 @@ export const InputSection: React.FC<InputSectionProps> = ({ onAnalyze, isLoading
   const [resumeData, setResumeData] = useState<{ content: string; mimeType: string; isBase64: boolean } | null>(null);
   const [resumeFileName, setResumeFileName] = useState<string>('');
   const [isDragging, setIsDragging] = useState(false);
-  const [modelType, setModelType] = useState<'fast' | 'deep'>('fast');
+  const [modelType, setModelType] = useState<'fast' | 'deep'>('deep'); // Default to deep for better quality
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement> | File) => {
     let file: File | undefined;
@@ -211,13 +211,13 @@ Requirements:
                 onClick={() => setModelType('fast')}
                 className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${modelType === 'fast' ? (theme === 'dark' ? 'bg-slate-800 text-indigo-400 shadow-sm' : 'bg-white text-indigo-600 shadow-sm') : (theme === 'dark' ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700')}`}
             >
-                <Zap className={`w-4 h-4 ${modelType === 'fast' ? 'fill-current' : ''}`} /> Lightning Fast
+                <Zap className={`w-4 h-4 ${modelType === 'fast' ? 'fill-current' : ''}`} /> Standard Speed
             </button>
             <button
                 onClick={() => setModelType('deep')}
                 className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${modelType === 'deep' ? (theme === 'dark' ? 'bg-slate-800 text-purple-400 shadow-sm' : 'bg-white text-purple-600 shadow-sm') : (theme === 'dark' ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700')}`}
             >
-                <Brain className="w-4 h-4" /> Deep Reasoning
+                <Brain className="w-4 h-4" /> Thinking Mode (CoT)
             </button>
         </div>
 
@@ -235,7 +235,7 @@ Requirements:
           {isLoading ? (
             <span className="flex items-center justify-center gap-3">
               <Loader2 className="w-5 h-5 animate-spin" />
-              Running {modelType === 'fast' ? 'Fast Analysis' : 'Deep Analysis'}...
+              {modelType === 'deep' ? 'Thinking & Analyzing...' : 'Analyzing...'}
             </span>
           ) : (
             'Generate Gap Analysis'
