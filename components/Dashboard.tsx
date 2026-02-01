@@ -14,7 +14,8 @@ import {
   AlertTriangle,
   Clock,
   BookOpen,
-  Calendar
+  Calendar,
+  Check
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -29,6 +30,7 @@ interface DashboardProps {
 export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, toggleTheme }) => {
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [completedActions, setCompletedActions] = useState<Set<string>>(new Set());
 
   // Filter skills based on search
   const filteredSkills = data.skills.filter(s => 
@@ -48,6 +50,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, togg
   const activeSkill = selectedSkill && filteredSkills.find(s => s.name === selectedSkill.name)
     ? selectedSkill
     : filteredSkills[0] || null;
+
+  const toggleActionComplete = (actionName: string) => {
+    const newSet = new Set(completedActions);
+    if (newSet.has(actionName)) {
+      newSet.delete(actionName);
+    } else {
+      newSet.add(actionName);
+    }
+    setCompletedActions(newSet);
+  };
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-emerald-400';
@@ -109,7 +121,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, togg
   };
 
   // Timeline Helpers
-  const getPriorityIcon = (priority: string) => {
+  const getPriorityIcon = (priority: string, isCompleted: boolean) => {
+    if (isCompleted) return <Check className="w-5 h-5 text-white" />;
     switch (priority) {
       case 'High': return <AlertTriangle className="w-4 h-4 text-white" />;
       case 'Medium': return <Clock className="w-4 h-4 text-white" />;
@@ -118,11 +131,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, togg
     }
   };
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityColor = (priority: string, isCompleted: boolean) => {
+    if (isCompleted) return 'bg-emerald-500 border-emerald-600 shadow-lg shadow-emerald-500/30';
     switch (priority) {
       case 'High': return 'bg-red-500 border-red-600 shadow-lg shadow-red-500/30';
       case 'Medium': return 'bg-amber-500 border-amber-600 shadow-lg shadow-amber-500/30';
-      case 'Low': return 'bg-emerald-500 border-emerald-600 shadow-lg shadow-emerald-500/30';
+      case 'Low': return 'bg-indigo-500 border-indigo-600 shadow-lg shadow-indigo-500/30';
       default: return 'bg-slate-500 border-slate-600';
     }
   };
@@ -343,9 +357,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, togg
 
         {/* Learning Pathway - Enhanced Timeline View */}
       <div className={`rounded-2xl p-6 glass-panel border animate-fade-in ${glassCard}`} style={{ animationDelay: '0.5s' }}>
-          <h3 className={`text-lg font-semibold mb-8 flex items-center gap-2 ${headingColor}`}>
-            <ArrowRight className="w-5 h-5 text-indigo-400" /> Personalized Upskilling Pathway
-          </h3>
+          <div className="flex items-center justify-between mb-8">
+              <h3 className={`text-lg font-semibold flex items-center gap-2 ${headingColor}`}>
+                <ArrowRight className="w-5 h-5 text-indigo-400" /> Personalized Upskilling Pathway
+              </h3>
+              <div className="text-sm font-medium text-slate-500">
+                  {completedActions.size} / {filteredPathway.length} Completed
+              </div>
+          </div>
           
           <div className="relative space-y-8 pl-2">
              {/* Vertical Timeline Line */}
@@ -354,41 +373,79 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, togg
             {filteredPathway.length === 0 ? (
                  <div className="pl-16 opacity-50 italic">No learning steps match your search.</div>
             ) : (
-                filteredPathway.map((item, idx) => (
-                    <div key={idx} className="relative pl-16 group">
-                        
-                        {/* Timeline Node with Icon */}
-                        <div className={`absolute left-2 top-0 w-8 h-8 rounded-full flex items-center justify-center border-2 z-10 transition-transform duration-300 group-hover:scale-110 ${getPriorityColor(item.priority)}`}>
-                             {getPriorityIcon(item.priority)}
-                        </div>
-                        
-                        {/* Content Card */}
-                        <div className={`p-5 rounded-2xl border transition-all duration-300 transform group-hover:-translate-y-1 group-hover:shadow-lg ${glassCard} ${glassCardHover}`}>
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
-                                <h4 className={`font-bold text-lg ${headingColor}`}>{item.action}</h4>
-                                <div className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg border ${theme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-white border-indigo-100 text-indigo-600'}`}>
-                                    <Calendar className="w-3 h-3" />
-                                    {item.timeline}
-                                </div>
+                filteredPathway.map((item, idx) => {
+                    const isCompleted = completedActions.has(item.action);
+                    const isHighPriority = item.priority === 'High';
+
+                    return (
+                        <div key={idx} className="relative pl-16 group">
+                            
+                            {/* Timeline Node with Icon */}
+                            <div className={`absolute left-2 top-0 w-8 h-8 rounded-full flex items-center justify-center border-2 z-10 transition-transform duration-300 group-hover:scale-110 ${getPriorityColor(item.priority, isCompleted)}`}>
+                                 {getPriorityIcon(item.priority, isCompleted)}
                             </div>
                             
-                            <div className="flex items-center gap-2 text-sm mb-3">
-                                <span className={textMuted}>Priority:</span> 
-                                <span className={`font-medium ${
-                                    item.priority === 'High' ? 'text-red-400' : 
-                                    item.priority === 'Medium' ? 'text-amber-400' : 
-                                    'text-emerald-400'
-                                }`}>{item.priority}</span>
-                            </div>
+                            {/* Content Card */}
+                            <div className={`p-5 rounded-2xl border transition-all duration-300 transform group-hover:-translate-y-1 group-hover:shadow-lg ${glassCard} ${glassCardHover} ${isCompleted ? 'opacity-60 grayscale-[0.5]' : ''}`}>
+                                
+                                <div className="flex flex-col gap-4">
+                                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                                        <div className="space-y-1">
+                                            <h4 className={`font-bold text-lg ${headingColor} ${isCompleted ? 'line-through decoration-2 decoration-emerald-500/50' : ''}`}>{item.action}</h4>
+                                            
+                                            {/* High Priority Progress Bar / Indicator */}
+                                            {isHighPriority && !isCompleted && (
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    <span className="text-xs font-bold text-red-400 uppercase tracking-wider">High Priority</span>
+                                                    <div className="h-1.5 w-24 bg-red-500/20 rounded-full overflow-hidden">
+                                                        <div className="h-full bg-red-500 w-full animate-pulse rounded-full opacity-60"></div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
 
-                            {item.resource && (
-                                <a href={item.resource} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-indigo-500 hover:text-indigo-400 transition-colors p-2 -ml-2 rounded-lg hover:bg-indigo-500/10">
-                                    <BookOpen className="w-4 h-4"/> Recommended Resource
-                                </a>
-                            )}
+                                        <div className={`self-start flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg border whitespace-nowrap ${theme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-white border-indigo-100 text-indigo-600'}`}>
+                                            <Calendar className="w-3 h-3" />
+                                            {item.timeline}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex flex-wrap items-center justify-between gap-4">
+                                        <div className="flex items-center gap-2 text-sm">
+                                            <span className={textMuted}>Priority:</span> 
+                                            <span className={`font-medium ${
+                                                item.priority === 'High' ? 'text-red-400' : 
+                                                item.priority === 'Medium' ? 'text-amber-400' : 
+                                                'text-emerald-400'
+                                            }`}>{item.priority}</span>
+                                        </div>
+
+                                        <div className="flex items-center gap-3">
+                                            {item.resource && (
+                                                <a href={item.resource} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-indigo-500 hover:text-indigo-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-indigo-500/10">
+                                                    <BookOpen className="w-4 h-4"/> Resource
+                                                </a>
+                                            )}
+                                            
+                                            <button 
+                                                onClick={() => toggleActionComplete(item.action)}
+                                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border
+                                                    ${isCompleted 
+                                                        ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/30' 
+                                                        : theme === 'dark' ? 'bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-300' : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-600'
+                                                    }
+                                                `}
+                                            >
+                                                {isCompleted ? <CheckCircle className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border-2 border-current" />}
+                                                {isCompleted ? 'Completed' : 'Mark Complete'}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                ))
+                    );
+                })
             )}
           </div>
       </div>
