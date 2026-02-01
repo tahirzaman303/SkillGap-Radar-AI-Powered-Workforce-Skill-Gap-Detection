@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import mammoth from 'mammoth';
-import { Upload, FileText, Loader2, Moon, Sun, Wand2, Zap, Brain } from 'lucide-react';
-import { Theme } from '../types';
+import { Upload, FileText, Loader2, Moon, Sun, Wand2, Zap, Brain, User, Briefcase } from 'lucide-react';
+import { Theme, Persona } from '../types';
 
 interface InputSectionProps {
   onAnalyze: (jd: string, resumeData: { content: string; mimeType: string; isBase64: boolean }, modelType: 'fast' | 'deep') => void;
   isLoading: boolean;
   theme: Theme;
   toggleTheme: () => void;
+  persona: Persona;
+  setPersona: (p: Persona) => void;
 }
 
-export const InputSection: React.FC<InputSectionProps> = ({ onAnalyze, isLoading, theme, toggleTheme }) => {
+export const InputSection: React.FC<InputSectionProps> = ({ onAnalyze, isLoading, theme, toggleTheme, persona, setPersona }) => {
   const [jdText, setJdText] = useState('');
   const [resumeData, setResumeData] = useState<{ content: string; mimeType: string; isBase64: boolean } | null>(null);
   const [resumeFileName, setResumeFileName] = useState<string>('');
@@ -116,7 +118,7 @@ Requirements:
     <div className={`w-full max-w-5xl mx-auto p-8 rounded-3xl glass-panel border backdrop-blur-2xl transition-all duration-300 animate-fade-in ${containerClass}`}>
       
       {/* Header & Toggle */}
-      <div className="flex justify-between items-start mb-8">
+      <div className="flex flex-col md:flex-row justify-between items-start mb-8 gap-4">
         <div className="space-y-2">
             <div className="flex items-center gap-3">
                 <div className={`p-2 rounded-xl ${theme === 'dark' ? 'bg-indigo-500/20' : 'bg-indigo-100'}`}>
@@ -126,12 +128,30 @@ Requirements:
                 SkillGap Radar
                 </h1>
             </div>
-          <p className={labelClass}>
-            Enterprise-grade Semantic Gap Analysis powered by Gemini
-          </p>
+            <div className="flex flex-wrap items-center gap-3">
+                <p className={labelClass}>
+                    AI Talent Intelligence System
+                </p>
+                
+                {/* Persona Toggle */}
+                <div className={`flex items-center gap-1 p-1 rounded-xl border ${theme === 'dark' ? 'bg-slate-900/50 border-slate-700' : 'bg-white/50 border-slate-200'}`}>
+                    <button
+                        onClick={() => setPersona('candidate')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${persona === 'candidate' ? (theme === 'dark' ? 'bg-indigo-500/20 text-indigo-400' : 'bg-white shadow text-indigo-700') : (theme === 'dark' ? 'text-slate-500 hover:text-slate-300' : 'text-slate-400 hover:text-slate-600')}`}
+                    >
+                        <User className="w-3.5 h-3.5" /> Candidate Mode
+                    </button>
+                    <button
+                        onClick={() => setPersona('recruiter')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${persona === 'recruiter' ? (theme === 'dark' ? 'bg-purple-500/20 text-purple-400' : 'bg-white shadow text-purple-700') : (theme === 'dark' ? 'text-slate-500 hover:text-slate-300' : 'text-slate-400 hover:text-slate-600')}`}
+                    >
+                        <Briefcase className="w-3.5 h-3.5" /> Recruiter Mode
+                    </button>
+                </div>
+            </div>
         </div>
         
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-4 items-center self-end md:self-auto">
             <button
             onClick={loadSampleData}
             className="text-sm font-medium text-indigo-500 hover:text-indigo-400 underline underline-offset-4 transition-colors"

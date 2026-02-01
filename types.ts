@@ -26,6 +26,8 @@ export interface AnalysisResult {
 
 export type Theme = 'dark' | 'light';
 
+export type Persona = 'candidate' | 'recruiter';
+
 export interface FileInput {
   name: string;
   content: string | ArrayBuffer;

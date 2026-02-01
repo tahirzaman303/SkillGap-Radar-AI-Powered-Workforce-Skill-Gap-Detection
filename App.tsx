@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { InputSection } from './components/InputSection';
 import { Dashboard } from './components/Dashboard';
-import { AnalysisResult, Theme } from './types';
+import { AnalysisResult, Theme, Persona } from './types';
 import { analyzeGap } from './services/gemini';
 
 const App: React.FC = () => {
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [theme, setTheme] = useState<Theme>('dark');
+  const [persona, setPersona] = useState<Persona>('candidate');
 
   // Restore state on load
   useEffect(() => {
@@ -81,6 +82,8 @@ const App: React.FC = () => {
                       isLoading={isLoading} 
                       theme={theme} 
                       toggleTheme={toggleTheme}
+                      persona={persona}
+                      setPersona={setPersona}
                     />
                 </div>
             ) : (
@@ -89,6 +92,7 @@ const App: React.FC = () => {
                   onReset={handleReset} 
                   theme={theme}
                   toggleTheme={toggleTheme}
+                  persona={persona}
                 />
             )}
         </div>

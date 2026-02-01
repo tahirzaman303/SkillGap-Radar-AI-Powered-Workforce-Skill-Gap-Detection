@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AnalysisResult, Skill, Theme } from '../types';
+import { AnalysisResult, Skill, Theme, Persona } from '../types';
 import { SkillRadar } from './SkillRadar';
 import { 
   Download, 
@@ -15,7 +15,10 @@ import {
   Clock,
   BookOpen,
   Calendar,
-  Check
+  Check,
+  AlertCircle,
+  User,
+  Briefcase
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -25,9 +28,10 @@ interface DashboardProps {
   onReset: () => void;
   theme: Theme;
   toggleTheme: () => void;
+  persona: Persona;
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, toggleTheme }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, toggleTheme, persona }) => {
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [completedActions, setCompletedActions] = useState<Set<string>>(new Set());
@@ -177,8 +181,34 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, togg
             </div>
           </div>
           <div>
-            <h2 className={`text-2xl font-bold ${headingColor}`}>Analysis Complete</h2>
-            <p className={textMuted}>Powered by <span className="text-indigo-500 font-semibold">{data.modelUsed || 'Gemini AI'}</span></p>
+            <div className="flex items-center gap-3">
+              <h2 className={`text-2xl font-bold ${headingColor}`}>Analysis Complete</h2>
+              
+              {/* Confidence Disclaimer Badge */}
+              <div className={`group relative flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold cursor-help border transition-colors
+                ${theme === 'dark' ? 'bg-amber-500/10 border-amber-500/20 text-amber-400 hover:bg-amber-500/20' : 'bg-amber-100 border-amber-200 text-amber-600 hover:bg-amber-200'}
+              `}>
+                 <AlertCircle className="w-3 h-3" />
+                 <span>AI Confidence</span>
+                 
+                 {/* Tooltip */}
+                 <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 p-3 rounded-xl shadow-2xl border backdrop-blur-xl z-50 opacity-0 group-hover:opacity-100 pointer-events-none transition-all
+                    ${theme === 'dark' ? 'bg-slate-900/95 border-slate-700 text-slate-200' : 'bg-white/95 border-slate-200 text-slate-700'}
+                 `}>
+                    <p className="font-normal leading-tight">AI-generated insights — validate before making hiring decisions.</p>
+                 </div>
+              </div>
+            </div>
+            
+            <p className={`flex items-center gap-2 ${textMuted}`}>
+               {persona === 'candidate' ? (
+                   <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-500"><User className="w-3 h-3"/> Candidate View</span>
+               ) : (
+                   <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-purple-500/10 text-purple-500"><Briefcase className="w-3 h-3"/> Recruiter View</span>
+               )}
+               <span>•</span>
+               <span>Powered by {data.modelUsed || 'Gemini AI'}</span>
+            </p>
           </div>
         </div>
         
@@ -222,7 +252,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, togg
         <div className="lg:col-span-1 space-y-6">
           <div className={`rounded-2xl p-6 glass-panel border animate-fade-in ${glassCard}`} style={{ animationDelay: '0.1s' }}>
             <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${headingColor}`}>
-              <BrainCircuit className="w-5 h-5 text-indigo-400" /> Executive Summary
+              <BrainCircuit className="w-5 h-5 text-indigo-400" /> 
+              {persona === 'recruiter' ? 'Candidate Evaluation' : 'Executive Summary'}
             </h3>
             <p className={`${textBody} leading-relaxed text-sm`}>
               {data.executiveSummary}
@@ -359,7 +390,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onReset, theme, togg
       <div className={`rounded-2xl p-6 glass-panel border animate-fade-in ${glassCard}`} style={{ animationDelay: '0.5s' }}>
           <div className="flex items-center justify-between mb-8">
               <h3 className={`text-lg font-semibold flex items-center gap-2 ${headingColor}`}>
-                <ArrowRight className="w-5 h-5 text-indigo-400" /> Personalized Upskilling Pathway
+                <ArrowRight className="w-5 h-5 text-indigo-400" /> 
+                {persona === 'recruiter' ? 'Candidate Development Plan' : 'Personalized Upskilling Pathway'}
               </h3>
               <div className="text-sm font-medium text-slate-500">
                   {completedActions.size} / {filteredPathway.length} Completed
